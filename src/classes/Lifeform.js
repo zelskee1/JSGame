@@ -3,12 +3,13 @@ export class Lifeform {
     static id = 0;
     static INITIAL_HP=100;
 
-    hp;             // Attribut public
-    type;
+    #hp;             // Attribut public
+    #type;
 
     constructor(){
         this.id = Lifeform.id++;
         this.hp = Lifeform.INITIAL_HP;
+        
         /*
             Puisqu'on souhaite que les identifiants des instances de Lifeform s'enchainent
             PEU IMPORTE LE TYPE, on ne peut pas utiliser this.constructor.id puisque lorsqu'on appelle
@@ -19,9 +20,22 @@ export class Lifeform {
         */
     }
 
-    setHp(newHp){
+    #setHp(newHp){
         if(newHp < 0 || newHp > 999) throw new Error('HP must be between 0 and 999');
         this.hp = newHp;
+        return true;
+    }
+
+    #getHp(){
+        return this.hp;
+    }
+
+    #getType(){
+        return this.type;
+    }
+
+    isAlive(){
+        return this.hp > 0;
     }
     
     /**
@@ -35,4 +49,21 @@ export class Lifeform {
             `Type:${this.type}\n`+`HP:${this.hp}\n`
         );
     }    
+
+    attack(lifeform, withdraw){
+        
+        if(this.isAlive() && lifeform.isAlive()){
+            const attacker = this;
+            const prey = lifeform;
+            
+            prey.hp -= withdraw;
+            
+            if(prey.hp <= 0){
+                console.log('[ATTACK] ' + prey.type + ' is dead\n');
+                prey.hp = 0;
+            }
+        } else {
+            console.log('[ERROR] Attacker or target is dead, attack failed');
+        }
+    }
 }
